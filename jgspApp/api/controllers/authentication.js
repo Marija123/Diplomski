@@ -1,6 +1,7 @@
 var passport = require('passport');
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
+var PT = mongoose.model('passengerType');
 
 var sendJSONresponse = function(res, status, content)
 {
@@ -28,9 +29,17 @@ module.exports.register = function(req, res)
     //user.activated = req.body.activated;
     user.role = req.body.role;
 
-    user.setPassword(req.body.password);
+
+    PT.findOne({name: req.body.passengerType}).then(bla => {
+        user.passengerType = bla.id;
+
+        user.setPassword(req.body.password);
 
     user.save(function(err){
+        if(!err)
+        {
+            User.find({}).populate('passengerType');
+        }
         var token;
         token = user.generateJwt();
         res.status(200);
@@ -38,6 +47,9 @@ module.exports.register = function(req, res)
             "token" : token
         });
     });
+    });
+
+
 };
 
 module.exports.login = function(req, res){
