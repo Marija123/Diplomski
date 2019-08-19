@@ -47,3 +47,13 @@ process.on('SIGTERM', function() {
 
 require('./user');
 require('./passengerType');
+require('./dayType');
+require('./line');
+require('./payPal');
+require('./pricelist');
+require('./station');
+require('./ticket');
+require('./ticketPrices');
+require('./ticketType');
+require('./timetable');
+require('./vehicle');

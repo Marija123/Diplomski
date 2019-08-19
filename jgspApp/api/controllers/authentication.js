@@ -28,7 +28,7 @@ module.exports.register = function(req, res)
     //user.image = req.body.image;
     //user.activated = req.body.activated;
     user.role = req.body.role;
-
+if(user.role == "AppUser"){
 
     PT.findOne({name: req.body.passengerType}).then(bla => {
         user.passengerType = bla.id;
@@ -49,7 +49,22 @@ module.exports.register = function(req, res)
     });
     });
 
+}else {
+    user.setPassword(req.body.password);
 
+    user.save(function(err){
+        if(!err)
+        {
+            User.find({}).populate('passengerType');
+        }
+        var token;
+        token = user.generateJwt();
+        res.status(200);
+        res.json({
+            "token" : token
+        });
+    });
+}
 };
 
 module.exports.login = function(req, res){

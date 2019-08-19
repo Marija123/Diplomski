@@ -38,7 +38,8 @@ var userSchema = new mongoose.Schema({
     },
     passengerType: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'passengerType'
+        ref: 'passengerType',
+        required: false
     },
     hash:String,
     salt: String

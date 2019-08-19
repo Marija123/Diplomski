@@ -6,6 +6,6 @@ var dayTypeSchema = new mongoose.Schema({
         type: String,
         required: true
     }
-});
+}, {collection: 'dayType'});
 
-mongoose.model('DayType', dayTypeSchema);
+mongoose.model('dayType', dayTypeSchema);
