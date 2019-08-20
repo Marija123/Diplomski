@@ -18,6 +18,9 @@ router.post('/login', ctrlAuth.login);
 //router.post('',ctrlDayTypeConf.saveDayType);
 
 router.post('/addStation', ctrlStation.addStation);
+router.get('/getAllStations', ctrlStation.getAllStations);
+router.post('/changeStation', ctrlStation.changeStation);
+router.delete('/removeStation/:_id',ctrlStation.removeStation);
 
 var ctrlPassengerType = require('../controllers/passengerTypeCont');
 router.get('/getPassengerTypes',  ctrlPassengerType.findAllPassengerType);
