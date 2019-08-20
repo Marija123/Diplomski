@@ -8,6 +8,7 @@ var auth = jwt({
 
 var ctrlProfile = require('../controllers/profile');
 var ctrlAuth = require('../controllers/authentication');
+var ctrlStation = require('../controllers/stationCont');
 //var ctrlDayTypeConf = require('../controllers/dayTypeCont');
 
 router.get('/profile', auth, ctrlProfile.profileRead);
@@ -15,6 +16,8 @@ router.get('/profile', auth, ctrlProfile.profileRead);
 router.post('/register', ctrlAuth.register);
 router.post('/login', ctrlAuth.login);
 //router.post('',ctrlDayTypeConf.saveDayType);
+
+router.post('/addStation', ctrlStation.addStation);
 
 var ctrlPassengerType = require('../controllers/passengerTypeCont');
 router.get('/getPassengerTypes',  ctrlPassengerType.findAllPassengerType);
