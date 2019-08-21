@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Station = mongoose.model('station');
+var Line = mongoose.model('line');
 
 module.exports.removeStation = function(req, res)
 {
@@ -12,6 +13,18 @@ module.exports.removeStation = function(req, res)
     }
 
     Station.findOneAndRemove({_id: req.params._id}).then(bla =>{
+
+        Line.find().then(aa => {
+            aa.forEach(bb => {
+                bb.stations.forEach(cc => {
+                    if(cc == req.params._id)
+                    {
+                        bb.stations.remove(cc);
+                        Line.findOneAndUpdate({_id: bb._id}, {stations:bb.stations}).then(abc => {});
+                    }
+                })
+            })
+        })
         res.status(200).json({
             "message" : "Station successfully removed."
     });
