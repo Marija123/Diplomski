@@ -10,6 +10,7 @@ var ctrlProfile = require('../controllers/profile');
 var ctrlAuth = require('../controllers/authentication');
 var ctrlStation = require('../controllers/stationCont');
 var ctrlLine = require('../controllers/lineCont');
+var ctrlVehicle = require('../controllers/vehicleCont');
 //var ctrlDayTypeConf = require('../controllers/dayTypeCont');
 
 router.get('/profile', auth, ctrlProfile.profileRead);
@@ -27,6 +28,11 @@ router.post('/addLine', ctrlLine.addLine);
 router.get('/getAllLines', ctrlLine.getAllLines);
 router.post('/changeLine/:_id',ctrlLine.changeLine);
 router.delete('/removeLine/:_id', ctrlLine.removeLine);
+
+router.post('/addVehicle', ctrlVehicle.addVehicle);
+router.get('/getAllVehicles', ctrlVehicle.getAllVehicles);
+router.get('/getAllAvailableVehicles', ctrlVehicle.getAllAvailableVehicles);
+router.delete('/removeVehicle/:_id', ctrlVehicle.removeVehicle);
 
 var ctrlPassengerType = require('../controllers/passengerTypeCont');
 router.get('/getPassengerTypes',  ctrlPassengerType.findAllPassengerType);
