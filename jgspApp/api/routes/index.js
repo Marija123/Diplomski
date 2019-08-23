@@ -11,6 +11,11 @@ var ctrlAuth = require('../controllers/authentication');
 var ctrlStation = require('../controllers/stationCont');
 var ctrlLine = require('../controllers/lineCont');
 var ctrlVehicle = require('../controllers/vehicleCont');
+
+var ctrlPricelist = require('../controllers/pricelistCont');
+
+router.post('/addPricelist', ctrlPricelist.addPricelist);
+router.get('/getPricelist',  ctrlPricelist.getPricelist);
 //var ctrlDayTypeConf = require('../controllers/dayTypeCont');
 
 router.get('/profile', auth, ctrlProfile.profileRead);
