@@ -2,5 +2,5 @@
     "type": "node",
     "request": "Launch",
     "name": "Launch Program",
-    "program": "${workspaceFolder}/api/controllers/pricelistCont.js"
+    "program": "${workspaceFolder}/api/controllers/authentication.js"
 }

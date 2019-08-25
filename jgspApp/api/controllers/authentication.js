@@ -9,6 +9,22 @@ var sendJSONresponse = function(res, status, content)
     res.json(content);
 }
 
+module.exports.edit = function(req,res)
+{
+    if(!req.body.Name || !req.body.Email  || !req.body.Surname || !req.body.Address  || !req.body.Birthday ) {
+        sendJSONresponse(res, 400, {
+            "message": "All fields required"
+        });
+        return;
+    }
+    const nesto= {email: req.body.Email, name: req.body.Name, address: req.body.Address, birthday : new Date(req.body.Birthday)}
+    User.findOneAndUpdate({_id : req.body.Id}, nesto).then(bla => {
+       return res.status(200).json({
+            "message" : "Successfully edited"
+        });
+    })
+}
+
 module.exports.register = function(req, res)
 {
     if(!req.body.name || !req.body.email || !req.body.password || !req.body.surname || !req.body.address  || !req.body.birthday || !req.body.role) {

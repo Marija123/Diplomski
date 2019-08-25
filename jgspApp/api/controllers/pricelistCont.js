@@ -3,46 +3,166 @@ var Pricelist = mongoose.model('pricelist');
 var TicketPrices = mongoose.model('ticketPrices');
 var TicketType = mongoose.model('ticketType');
 
+
+module.exports.getTicketPrices = function(req,res)
+{
+    
+    
+        var ret = [];
+        TicketPrices.find().exec().then(bb => {
+            bb.forEach(element => {
+                if(element.pricelist._id == req.query.parami){
+                    ret.push(element);
+                }
+            })
+    
+            var rr = [];
+            TicketType.find().exec().then(bla => {
+              bla.forEach(zz => {
+                if(zz.name == "Hourly"){
+                    ret.forEach(mm =>{
+                        if(mm.ticketType._id == zz.id){
+                            rr.push(mm);
+                        }
+                    })
+                }
+              })
+                
+              bla.forEach(zz => {
+                if(zz.name == "Daily"){
+                    ret.forEach(mm =>{
+                        if(mm.ticketType._id == zz.id){
+                            rr.push(mm);
+                        }
+                    })
+                }
+              })
+    
+              bla.forEach(zz => {
+                if(zz.name == "Monthly"){
+                    ret.forEach(mm =>{
+                        if(mm.ticketType._id == zz.id){
+                            rr.push(mm);
+                        }
+                    })
+                }
+              })
+    
+              bla.forEach(zz => {
+                if(zz.name == "Yearly"){
+                    ret.forEach(mm =>{
+                        if(mm.ticketType._id == zz.id){
+                            rr.push(mm);
+                        }
+                    })
+                }
+              })
+              res.send(rr);
+    
+                
+          })  
+    
+        })
+    }
+
+
+
+
 module.exports.getPricelist = function(req, res)
 {
-    Pricelist.find().exec().then(type => { res.send(type);});
 
+
+     Pricelist.find().exec().then(pric => {
+        var lala = pric.reverse();
+
+        var ret = lala.find(checkAdult);
+
+         TicketPrices.find().exec().then(pr => {
+            pr.forEach(element => {
+                if(element.pricelist._id == ret.id)
+                {
+                    ret.ticketPricess.push(element.id);
+                }
+            });
+               
+            res.send(ret);
+         });
+
+        
+        
+    });
+    
+
+}
+
+function checkAdult(age) {
+    var today = new Date();
+    if(age.startOfValidity.getFullYear() <= today.getFullYear() && age.startOfValidity.getMonth() <= today.getMonth() && age.startOfValidity.getDate() <= today.getDate())
+    {
+        if(age.endOfValidity.getFullYear() >= today.getFullYear() &&  age.endOfValidity.getMonth() >= today.getMonth() && age.endOfValidity.getDate() >= today.getDate())
+        {
+            return age;
+        }
+    }
 }
 
 module.exports.addPricelist = function(req, res)
 {
     if(req.body.Hourly <= 0 || req.body.Daily <=0 || req.body.Monthly<=0 || req.body.Yearly<=0)
     {
-        sendJSONresponse(res, 400, {
-            "message": "Prices can't be less then 1!"
-        });
-        return;
+        
+
+        return res.status(400).json({ "message": "Prices can't be less then 1!"})
     }
 
     if(req.body.PriceList.StartOfValidity == "" || req.body.PriceList.EndOfValidity == ""  || req.body.PriceList.EndOfValidity == null || req.body.PriceList.StartOfValidity == null)
     {
-        sendJSONresponse(res, 400, {
-            "message": "Start or end of validity can't be empty!"
-        });
-        return;
+      
+
+        return res.status(400).json({ "message": "Start or end of validity can't be empty!"})
+
+    }
+    var today = new Date();
+
+    var st = new Date(req.body.PriceList.StartOfValidity);
+    var et = new Date(req.body.PriceList.EndOfValidity);
+
+    if(st.getFullYear() < today.getFullYear())
+    {
+        return res.status(400).json({ "message": "You can't make pricelist for past!"});
+        
+    }else{ 
+        if(st.getMonth() < today.getMonth()){
+            return res.status(400).json({ "message": "You can't make pricelist for past!"});
+        }else{
+            if(st.getDate() < today.getDate())
+            {
+                return res.status(400).json({ "message": "You can't make pricelist for past!"});
+            }
+        }
+
+    }
+
+    if(st.getFullYear() > et.getFullYear())
+    {
+        return res.status(400).json({"message": "Start of validity is bigger then end of validity!"});
+       
+    }else{ 
+        if(st.getMonth() > et.getMonth()){
+            return res.status(400).json({"message": "Start of validity is bigger then end of validity!"});
+        }else{
+            if(st.getDate() > et.getDate())
+            {
+                return res.status(400).json({"message": "Start of validity is bigger then end of validity!"});
+            }
+        }
+
     }
 
 
-    // if(req.body.PriceList.StartOfValidity.Value.Date < Date.now.Date)
-    // {
-    //     sendJSONresponse(res, 400, {
-    //         "message": "You can't make pricelist for past!"
-    //     });
-    //     return;
-    // }
 
-    // if(req.body.PriceList.StartOfValidity> req.body.PriceList.EndOfValidity)
-    // {
-    //     sendJSONresponse(res, 400, {
-    //         "message": "Start of validity is bigger then end of validity!"
-    //     });
-    //     return;
-    // }
+  
+   
 
 
     var pricelist = new Pricelist();
@@ -95,9 +215,9 @@ module.exports.addPricelist = function(req, res)
         return;
     }
 
-    res.status(200).json({
-        "message" : "Pricelist successfully added."
-    });
+        res.status(200).json({
+            "message" : "Pricelist successfully added."
+        });
     });
 
     
