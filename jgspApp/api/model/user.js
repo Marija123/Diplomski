@@ -33,8 +33,8 @@ var userSchema = new mongoose.Schema({
         required: true
     },
     image: {
-        data: Buffer,
-        contentType: String,
+     data: Buffer,
+    contentType: String,
         required: false
     },
     passengerType: {

@@ -15,6 +15,7 @@ var ctrlDayType = require('../controllers/dayTypeCont');
 var ctrlPricelist = require('../controllers/pricelistCont');
 var ctrlPassengerType = require('../controllers/passengerTypeCont');
 var ctrlTimetable = require('../controllers/timetableCont');
+var ctrlAutoriz = require('../controllers/authorizationCont');
 
 router.post('/addPricelist', ctrlPricelist.addPricelist);
 router.get('/getPricelist',  ctrlPricelist.getPricelist);
@@ -22,6 +23,13 @@ router.get('/getTicketPrices',ctrlPricelist.getTicketPrices);
 //var ctrlDayTypeConf = require('../controllers/dayTypeCont');
 
 router.get('/profile', auth, ctrlProfile.profileRead);
+router.get('/getAwaitingAdmins', ctrlAutoriz.getAwaitingAdmins);
+router.get('/getAwaitingControllers', ctrlAutoriz.getAwaitingControllers);
+router.get('/getAwaitingClients', ctrlAutoriz.getAwaitingClients);
+router.post('/authorizeAdmin', ctrlAutoriz.authorizeAdmin);
+router.post('/declineAdmin', ctrlAutoriz.declineAdmin);
+router.post('/authorizeController', ctrlAutoriz.authorizeController);
+router.post('/declineController', ctrlAutoriz.declineController);
 
 router.post('/register', ctrlAuth.register);
 router.post('/login', ctrlAuth.login);

@@ -52,7 +52,7 @@ module.exports.edit = function(req,res)
     if(req.files !=null)
     {
         var bal = {data : req.files.file.data, contentType: "image/png"}
-      const  nesto1= {email: req.body.email, name: req.body.name, address: req.body.address, birthday : new Date(req.body.birthday), image: bal, activated: "PENDING"}
+      const  nesto1= {email: req.body.email, name: req.body.name, address: req.body.address, birthday : new Date(req.body.birthday), image:bal, activated: "PENDING"}
 
         User.findOneAndUpdate({_id : req.body.Id}, nesto1).then(bla => {
             return res.status(200).json({
@@ -92,8 +92,9 @@ module.exports.register = function(req, res)
     user.birthday = req.body.birthday;
     if(req.files != null)
     {
+        //user.image = req.files.file;
         user.image.data = req.files.file.data;
-        user.image.contentType = "image/png";
+         user.image.contentType = "image/png";
     }
    
     user.activated = req.body.activated;
