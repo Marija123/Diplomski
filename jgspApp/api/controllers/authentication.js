@@ -9,24 +9,73 @@ var sendJSONresponse = function(res, status, content)
     res.json(content);
 }
 
-module.exports.edit = function(req,res)
+module.exports.editPassword = function(req,res)
 {
-    if(!req.body.Name || !req.body.Email  || !req.body.Surname || !req.body.Address  || !req.body.Birthday ) {
+    if(!req.body.id || !req.body.oldPassword  || !req.body.newPassword || !req.body.confirmPassword   ) {
         sendJSONresponse(res, 400, {
             "message": "All fields required"
         });
         return;
     }
-    const nesto= {email: req.body.Email, name: req.body.Name, address: req.body.Address, birthday : new Date(req.body.Birthday)}
-    User.findOneAndUpdate({_id : req.body.Id}, nesto).then(bla => {
-       return res.status(200).json({
-            "message" : "Successfully edited"
+
+    if(req.body.newPassword != req.body.confirmPassword)
+    {
+        return res.status(400).json({"message": "Lozinke se ne poklapau!"});
+    }else {
+        User.findById(req.body.id).then(aa => {
+           if(aa.validPassword(req.body.oldPassword)) 
+           {
+               aa.setPassword(req.body.newPassword);
+               const nesto = {hash: aa.hash, salt: aa.salt};
+               User.findOneAndUpdate({_id: req.body.id}, nesto ).then(bla => {
+                return res.status(200).json({
+                    "message" : "Successfully edited"
+                });
+               })
+           }else {
+            return res.status(400).json({"message": "Old password is not correct!"});
+           }
+        })
+    }
+
+}
+
+module.exports.edit = function(req,res)
+{
+    if(!req.body.name || !req.body.email  || !req.body.surname || !req.body.address  || !req.body.birthday ) {
+        sendJSONresponse(res, 400, {
+            "message": "All fields required"
         });
-    })
+        return;
+    }
+    
+    if(req.files !=null)
+    {
+        var bal = {data : req.files.file.data, contentType: "image/png"}
+      const  nesto1= {email: req.body.email, name: req.body.name, address: req.body.address, birthday : new Date(req.body.birthday), image: bal, activated: "PENDING"}
+
+        User.findOneAndUpdate({_id : req.body.Id}, nesto1).then(bla => {
+            return res.status(200).json({
+                 "message" : "Successfully edited"
+             });
+         })
+    }else {
+        const nesto= {email: req.body.email, name: req.body.name, address: req.body.address, birthday : new Date(req.body.birthday)}
+        User.findOneAndUpdate({_id : req.body.Id}, nesto).then(bla => {
+            return res.status(200).json({
+                 "message" : "Successfully edited"
+             });
+         })
+    }
+   
+   
 }
 
 module.exports.register = function(req, res)
 {
+
+ 
+
     if(!req.body.name || !req.body.email || !req.body.password || !req.body.surname || !req.body.address  || !req.body.birthday || !req.body.role) {
         sendJSONresponse(res, 400, {
             "message": "All fields required"
@@ -41,9 +90,17 @@ module.exports.register = function(req, res)
     user.surname = req.body.surname;
     user.address = req.body.address;
     user.birthday = req.body.birthday;
-    //user.image = req.body.image;
-    //user.activated = req.body.activated;
+    if(req.files != null)
+    {
+        user.image.data = req.files.file.data;
+        user.image.contentType = "image/png";
+    }
+   
+    user.activated = req.body.activated;
     user.role = req.body.role;
+
+
+
 if(user.role == "AppUser"){
 
     PT.findOne({name: req.body.passengerType}).then(bla => {

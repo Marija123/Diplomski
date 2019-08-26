@@ -5,6 +5,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 //dodato: Require Passport
 var passport = require('passport');
+const fileUpload = require('express-fileupload');
+//var fs = require('fs');
+var multer = require('multer');
 
 
 // dodato: Bring in the data model
@@ -32,6 +35,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //dodato:  Initialise Passport before using the route middleware
 app.use(passport.initialize());
+app.use(fileUpload());
+
+
+
+
 
 //app.use('/', indexRouter);
 //app.use('/users', usersRouter);
@@ -39,7 +47,11 @@ app.use(passport.initialize());
 //dodato: Use the API routes when path starts with /api
 app.use('/api', routesApi);
 
-
+app.use(multer({ dest: './uploads/',
+  rename: function (fieldname, filename) {
+    return filename;
+  },
+ }).single());
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
