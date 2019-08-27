@@ -16,11 +16,17 @@ var ctrlPricelist = require('../controllers/pricelistCont');
 var ctrlPassengerType = require('../controllers/passengerTypeCont');
 var ctrlTimetable = require('../controllers/timetableCont');
 var ctrlAutoriz = require('../controllers/authorizationCont');
+var ctrlTicket = require('../controllers/ticketCont');
 
 router.post('/addPricelist', ctrlPricelist.addPricelist);
 router.get('/getPricelist',  ctrlPricelist.getPricelist);
 router.get('/getTicketPrices',ctrlPricelist.getTicketPrices);
-//var ctrlDayTypeConf = require('../controllers/dayTypeCont');
+
+
+router.get('/getAllTicketTypes', ctrlTicket.getAllTicketTypes);
+router.post('/checkValidity', ctrlTicket.checkValidity);
+router.get('/getTypeUser/:_id', ctrlTicket.getTypeUser);
+router.post('/buyTicket', ctrlTicket.buyTicket);
 
 router.get('/profile', auth, ctrlProfile.profileRead);
 router.get('/getAwaitingAdmins', ctrlAutoriz.getAwaitingAdmins);
@@ -30,11 +36,15 @@ router.post('/authorizeAdmin', ctrlAutoriz.authorizeAdmin);
 router.post('/declineAdmin', ctrlAutoriz.declineAdmin);
 router.post('/authorizeController', ctrlAutoriz.authorizeController);
 router.post('/declineController', ctrlAutoriz.declineController);
+router.post('/authorizeUser', ctrlAutoriz.authorizeUser);
+router.post('/declineUser', ctrlAutoriz.declineUser);
+
 
 router.post('/register', ctrlAuth.register);
 router.post('/login', ctrlAuth.login);
 router.post('/edit', ctrlAuth.edit);
 router.post('/editPassword', ctrlAuth.editPassword);
+router.post('/resendReqest', ctrlProfile.resendReqest);
 //router.post('',ctrlDayTypeConf.saveDayType);
 
 router.post('/addStation', ctrlStation.addStation);

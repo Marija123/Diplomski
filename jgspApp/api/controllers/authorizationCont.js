@@ -2,6 +2,33 @@ var mongoose = require('mongoose');
 var User = mongoose.model('User');
 
 
+module.exports.declineUser = function(req,res)
+{
+    if(req.body.id == "")
+    {
+        res.status(400).json({"message": "Missing id"});
+    }
+    const nesto = {activated: "DECLINED", image : null};
+    User.findOneAndUpdate({_id: req.body.id}, nesto).then(bla => {
+        //slanje mejla
+        res.status(200).json({"message": "Ok"});
+    });
+}
+
+module.exports.authorizeUser = function(req,res)
+{
+    if(req.body.id == "")
+    {
+        res.status(400).json({"message": "Missing id"});
+    }
+    const nesto = {activated: "ACTIVATED"};
+    User.findOneAndUpdate({_id: req.body.id}, nesto).then(bla => {
+        //slanje mejla
+        res.status(200).json({"message": "Ok"});
+    });
+}
+
+
 module.exports.declineController = function(req,res)
 {
     if(req.body.id == "")
