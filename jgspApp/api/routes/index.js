@@ -27,6 +27,11 @@ router.get('/getAllTicketTypes', ctrlTicket.getAllTicketTypes);
 router.post('/checkValidity', ctrlTicket.checkValidity);
 router.get('/getTypeUser/:_id', ctrlTicket.getTypeUser);
 router.post('/buyTicket', ctrlTicket.buyTicket);
+router.get('/getAllTicketsForOneUser/:email', ctrlTicket.getAllTicketsForOneUser);
+router.get('/getPrice', ctrlTicket.getPrice);
+router.get('/getTicket/:id', ctrlTicket.getTicket);
+router.post('/validateTicketNoUser', ctrlTicket.validateTicketNoUser);
+router.post('/validateTicket/:email', ctrlTicket.validateTicket);
 
 router.get('/profile', auth, ctrlProfile.profileRead);
 router.get('/getAwaitingAdmins', ctrlAutoriz.getAwaitingAdmins);
