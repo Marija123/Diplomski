@@ -3,11 +3,11 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-//dodato: Require Passport
 var passport = require('passport');
 const fileUpload = require('express-fileupload');
-//var fs = require('fs');
 var multer = require('multer');
+
+
 
 
 // dodato: Bring in the data model
@@ -33,10 +33,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+
+
 //dodato:  Initialise Passport before using the route middleware
 app.use(passport.initialize());
 app.use(fileUpload());
-
 
 
 
