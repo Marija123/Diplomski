@@ -8,27 +8,39 @@ module.exports.deleteTimetable = function(req, res)
 {
     if(!req.params._id)
     {
-        return res.status(400).json({ "message": "All fields are required"});
+        return res.status(400).json({ "message": "You have to choose timetable you want to remove"});
     }
-    Timetable.findOneAndRemove({_id: req.params._id}).then(bla =>{
 
-        Vehicle.find().then(aa => {
-            aa.forEach(el => {
-               el.timetables.forEach(t => {
-                   if(t == req.params._id)
-                   {
-                      el.timetables.remove(t);
-                        Vehicle.findOneAndUpdate({_id : el._id}, {timetables : el.timetables}).then(abc => {});
-                   }
-               })
-            })
-            return res.status(200).json({
-                "message" : "Station successfully removed."
-        });
+    Timetable.findById(req.params._id).then(tt => {
+        if(tt == null || tt == undefined)
+        {
+            return res.status(404).json({"message" : "Timetable that you are trying to remove either do not exist or was previously deleted by another user."});
+        }else{
+           
+                Timetable.findOneAndRemove({_id: req.params._id}).then(bla =>{
+
+                    Vehicle.find().then(aa => {
+                        aa.forEach(el => {
+                           el.timetables.forEach(t => {
+                               if(t == req.params._id)
+                               {
+                                  el.timetables.remove(t);
+                                    Vehicle.findOneAndUpdate({_id : el._id}, {timetables : el.timetables}).then(abc => {});
+                               }
+                           })
+                        })
+                        return res.status(200).json({
+                            "message" : "Timetable successfully removed."
+                        });
+                        
+                        });
+                   
+                });
             
-        });
-       
-});
+        }
+    });
+
+   
 }
 
 
@@ -40,10 +52,23 @@ module.exports.changeTimetable = function(req, res)
         return res.status(400).json({ "message": "All fields are required"});
     }
 
-    const nestp = {departures : req.body.Departures};
-    Timetable.findOneAndUpdate({_id: req.body.Id}, nestp).then(aaa => {
-        return res.status(200).json({ "message": "Timetable successfully changed"});
+    Timetable.findById(req.body.Id).then(tt => {
+        if(tt == null || tt == undefined)
+        {
+            return res.status(404).json({"message" : "Timetable that you are trying to edit either do not exist or was previously deleted by another user."});
+        }else{
+            if(tt.__v != req.body.Version)
+            {
+                return res.status(409).json({"message": "CONFLICT You are trying to edit a Timetable that has been changed recently. Try again. "})
+            }else {
+                const nestp = {departures : req.body.Departures, __v : (req.body.Version+1)};
+                Timetable.findOneAndUpdate({_id: req.body.Id}, nestp).then(aaa => {
+                    return res.status(200).json({ "message": "Timetable successfully changed"});
+                })
+            }
+        }
     })
+   
 }
 
 module.exports.FindVehicleId = function(req, res)

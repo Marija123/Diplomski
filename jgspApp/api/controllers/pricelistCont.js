@@ -99,9 +99,18 @@ function checkAdult(age) {
     var today = new Date();
     if(age.startOfValidity.getFullYear() <= today.getFullYear() && age.startOfValidity.getMonth() <= today.getMonth() && age.startOfValidity.getDate() <= today.getDate())
     {
-        if(age.endOfValidity.getFullYear() >= today.getFullYear() &&  age.endOfValidity.getMonth() >= today.getMonth() && age.endOfValidity.getDate() >= today.getDate())
+        if(age.endOfValidity.getFullYear() >= today.getFullYear()) 
         {
-            return age;
+            if( age.endOfValidity.getMonth()> today.getMonth()){
+                return age;
+            }
+            else if(age.endOfValidity.getMonth() == today.getMonth())
+            {
+                if( age.endOfValidity.getDate() >= today.getDate()){
+                    return age;
+                }
+            }
+            
         }
     }
 }
@@ -151,19 +160,16 @@ module.exports.addPricelist = function(req, res)
         if(st.getMonth() > et.getMonth()){
             return res.status(400).json({"message": "Start of validity is bigger then end of validity!"});
         }else{
-            if(st.getDate() > et.getDate())
-            {
-                return res.status(400).json({"message": "Start of validity is bigger then end of validity!"});
+            if(st.getMonth() == et.getMonth()){
+                if(st.getDate() > et.getDate())
+                {
+                    return res.status(400).json({"message": "Start of validity is bigger then end of validity!"});
+                }
             }
+           
         }
 
     }
-
-
-
-  
-   
-
 
     var pricelist = new Pricelist();
 
