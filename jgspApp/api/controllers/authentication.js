@@ -20,7 +20,7 @@ module.exports.editPassword = function(req,res)
 
     if(req.body.newPassword != req.body.confirmPassword)
     {
-        return res.status(400).json({"message": "Lozinke se ne poklapau!"});
+        return res.status(400).json({"message": "Passwords don't match!"});
     }else {
         User.findById(req.body.id).then(aa => {
            if(aa.validPassword(req.body.oldPassword)) 
@@ -48,25 +48,60 @@ module.exports.edit = function(req,res)
         });
         return;
     }
-    
-    if(req.files !=null)
-    {
-        var bal = {data : req.files.file.data, contentType: "image/png"}
-      const  nesto1= {email: req.body.email, name: req.body.name, address: req.body.address, birthday : new Date(req.body.birthday), image:bal, activated: "PENDING"}
 
-        User.findOneAndUpdate({_id : req.body.Id}, nesto1).then(bla => {
-            return res.status(200).json({
-                 "message" : "Successfully edited"
-             });
-         })
-    }else {
-        const nesto= {email: req.body.email, name: req.body.name, address: req.body.address, birthday : new Date(req.body.birthday)}
-        User.findOneAndUpdate({_id : req.body.Id}, nesto).then(bla => {
-            return res.status(200).json({
-                 "message" : "Successfully edited"
-             });
-         })
-    }
+    User.findById(req.body.Id).then(us => {
+        if(us.email != req.body.email)
+        {
+            User.findOne({email : req.body.email}).then(dupl => {
+                if(dupl)
+                {
+                    return res.status(400).json({"message" : "User with that email address already exist!"});
+                }else {
+                    if(req.files !=null)
+                    {
+                        var bal = {data : req.files.file.data, contentType: "image/png"}
+                      const  nesto1= {email: req.body.email,surname: req.body.surname, name: req.body.name, address: req.body.address, birthday : new Date(req.body.birthday), image:bal, activated: "PENDING"}
+                
+                        User.findOneAndUpdate({_id : req.body.Id}, nesto1).then(bla => {
+                            return res.status(200).json({
+                                 "message" : "Successfully edited"
+                             });
+                         })
+                    }else {
+                        
+                        const nesto= {email: req.body.email,surname: req.body.surname, name: req.body.name, address: req.body.address, birthday : new Date(req.body.birthday)}
+                        User.findOneAndUpdate({_id : req.body.Id}, nesto).then(bla => {
+                            
+                                return res.status(200).json({ "message" : "Successfully edited" });
+                         })
+                        
+                    }
+                }
+            })
+        }else{
+            if(req.files !=null)
+            {
+                var bal = {data : req.files.file.data, contentType: "image/png"}
+              const  nesto1= {email: req.body.email,surname: req.body.surname, name: req.body.name, address: req.body.address, birthday : new Date(req.body.birthday), image:bal, activated: "PENDING"}
+        
+                User.findOneAndUpdate({_id : req.body.Id}, nesto1).then(bla => {
+                    return res.status(200).json({
+                         "message" : "Successfully edited"
+                     });
+                 })
+            }else {
+                
+                const nesto= {email: req.body.email,surname: req.body.surname, name: req.body.name, address: req.body.address, birthday : new Date(req.body.birthday)}
+                User.findOneAndUpdate({_id : req.body.Id}, nesto).then(bla => {
+                    
+                        return res.status(200).json({ "message" : "Successfully edited" });
+                 })
+                
+            }
+        }
+    })
+    
+  
    
    
 }
@@ -92,7 +127,6 @@ module.exports.register = function(req, res)
     user.birthday = req.body.birthday;
     if(req.files != null)
     {
-        //user.image = req.files.file;
         user.image.data = req.files.file.data;
          user.image.contentType = "image/png";
     }
@@ -110,17 +144,18 @@ if(user.role == "AppUser"){
         user.setPassword(req.body.password);
 
     user.save(function(err){
-        if(!err)
-        {
-            User.find({}).populate('passengerType');
-        }
-        var token;
-        token = user.generateJwt();
-        res.status(200);
-        res.json({
-            "token" : token
+            if(!err)
+            {
+                User.find({}).populate('passengerType');
+                var token;
+                token = user.generateJwt();
+                res.status(200);
+                res.json({"token" : token});
+            }else{
+                return res.status(400).json({"message": "User with that email address already exist."});
+            }
+            
         });
-    });
     });
 
 }else {
@@ -130,13 +165,17 @@ if(user.role == "AppUser"){
         if(!err)
         {
             User.find({}).populate('passengerType');
-        }
-        var token;
+            var token;
         token = user.generateJwt();
         res.status(200);
         res.json({
             "token" : token
         });
+
+        }else{
+            return res.status(400).json({"message": "User with that email address already exist."});
+        }
+        
     });
 }
 };

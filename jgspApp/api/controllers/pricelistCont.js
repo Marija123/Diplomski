@@ -76,23 +76,23 @@ module.exports.getPricelist = function(req, res)
         var lala = pric.reverse();
 
         var ret = lala.find(checkAdult);
-
-         TicketPrices.find().exec().then(pr => {
-            pr.forEach(element => {
-                if(element.pricelist._id == ret.id)
-                {
-                    ret.ticketPricess.push(element.id);
-                }
-            });
-               
-            res.send(ret);
-         });
-
-        
-        
+        if(ret != null && ret != undefined)
+        {
+            TicketPrices.find().exec().then(pr => {
+                pr.forEach(element => {
+                    if(element.pricelist._id == ret.id)
+                    {
+                        ret.ticketPricess.push(element.id);
+                    }
+                });
+                   
+                res.send(ret);
+             });
+        }
+        else{
+            return res.status(404).json({"message": "notFound"});
+        }
     });
-    
-
 }
 
 function checkAdult(age) {
