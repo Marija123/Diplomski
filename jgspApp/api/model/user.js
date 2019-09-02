@@ -49,7 +49,7 @@ var userSchema = new mongoose.Schema({
 //lista karata, passenger type
 
 userSchema.methods.setPassword = function(password){
-    this.salt = crypto.randomBytes(16).toString('hex'); //?
+    this.salt = crypto.randomBytes(16).toString('hex'); 
     this.hash = crypto.pbkdf2Sync(password,this.salt,1000,64,'sha512').toString('hex');
 
 }
@@ -70,8 +70,6 @@ userSchema.methods.generateJwt = function() {
         surname: this.surname,
         address: this.address,
         birthday: this.birthday,
-        //image: this.image,
-        //activated: this.activated,
         role: this.role,
         exp: parseInt(expiry.getTime() / 1000),
     }, "MY_SECRET");

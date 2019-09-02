@@ -50,7 +50,6 @@ io.on('connection',
      value.push(this.stati[i].latitude);
      i++;
      
-      console.log('Emitting value: ' + value);
       socket.emit('data', { data: value });
     },
     4000);
